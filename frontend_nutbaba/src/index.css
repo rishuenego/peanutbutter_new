@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #FDF6ED;
+  color: #333;
+}
+
+section {
+  margin-bottom: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FDF6ED;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E87722;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D16A1E;
+}
+
+/* Button hover effects */
+.btn-primary {
+  @apply bg-primary text-white px-6 py-2 rounded-full font-medium transition-all duration-300;
+}
+
+.btn-primary:hover {
+  @apply bg-primary-dark transform scale-105;
+}
+
+.btn-secondary {
+  @apply border-2 border-primary text-primary px-6 py-2 rounded-full font-medium transition-all duration-300;
+}
+
+.btn-secondary:hover {
+  @apply bg-primary text-white;
+}
+
+/* Product card hover */
+.product-card {
+  @apply transition-all duration-300;
+}
+
+.product-card:hover {
+  @apply transform -translate-y-2 shadow-lg;
+}
+
+/* Star rating colors */
+.star-filled {
+  color: #FFB800;
+}
+
+.star-empty {
+  color: #D1D5DB;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.5s ease-out forwards;
+}
