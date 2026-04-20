@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../../utils';
+
+const API_URL = getApiUrl();
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -12,10 +15,6 @@ const AdminLogin = () => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
-    const API_URL = import.meta.env.VITE_API_URL 
-      ? `${import.meta.env.VITE_API_URL}/api` 
-      : 'http://localhost:5000/api';
 
     try {
       const response = await fetch(`${API_URL}/admin/login`, {

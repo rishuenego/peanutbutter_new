@@ -1,9 +1,8 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { User, Admin } from '../types'
+import { getApiUrl } from '../utils'
 
-const API_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api` 
-  : 'http://localhost:5000/api'
+const API_URL = getApiUrl()
 
 interface AuthContextType {
   user: User | null

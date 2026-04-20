@@ -1,6 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api` 
-  : 'http://localhost:5000/api';
+import { getApiUrl } from './index';
+
+const API_URL = getApiUrl();
 
 export function getAdminToken(): string | null {
   return localStorage.getItem('adminToken');

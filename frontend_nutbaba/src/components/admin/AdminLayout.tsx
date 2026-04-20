@@ -5,12 +5,14 @@ import {
   Package,
   ShoppingCart,
   Ticket,
-  Users,
   Settings,
   LogOut,
   Menu,
   X,
 } from 'lucide-react';
+import { getApiUrl } from '../../utils';
+
+const API_URL = getApiUrl();
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -24,10 +26,6 @@ const AdminLayout = () => {
   }, []);
 
   const checkAuth = async () => {
-    const API_URL = import.meta.env.VITE_API_URL 
-      ? `${import.meta.env.VITE_API_URL}/api` 
-      : 'http://localhost:5000/api';
-    
     // Check localStorage for admin token and user
     const storedAdmin = localStorage.getItem('adminUser');
     const storedToken = localStorage.getItem('adminToken');
@@ -59,9 +57,6 @@ const AdminLayout = () => {
   };
 
   const handleLogout = async () => {
-    const API_URL = import.meta.env.VITE_API_URL 
-      ? `${import.meta.env.VITE_API_URL}/api` 
-      : 'http://localhost:5000/api';
     const token = localStorage.getItem('adminToken');
     
     await fetch(`${API_URL}/admin/logout`, {

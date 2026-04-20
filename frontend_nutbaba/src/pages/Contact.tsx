@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { getApiUrl } from '../utils';
 
 const Contact = () => {
+  const API_URL = getApiUrl();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,11 +26,12 @@ const Contact = () => {
     setSubmitStatus('idle');
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch(`${API_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 

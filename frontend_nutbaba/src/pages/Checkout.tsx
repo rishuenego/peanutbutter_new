@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { formatPrice } from '../utils';
+import { formatPrice, getApiUrl } from '../utils';
+
+const API_URL = getApiUrl();
 import { CreditCard, Banknote } from 'lucide-react';
 
 declare global {
@@ -136,11 +138,12 @@ const Checkout = () => {
     setCouponError('');
 
     try {
-      const response = await fetch('/api/coupons/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponCode, orderAmount: subtotal })
-      });
+const response = await fetch(`${API_URL}/coupons/validate`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({ code: couponCode, orderAmount: subtotal })
+});
       const data = await response.json();
 
       if (data.success) {
@@ -201,11 +204,12 @@ const Checkout = () => {
       paymentMethod,
     };
 
-    const response = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData),
-    });
+const response = await fetch(`${API_URL}/orders`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify(orderData),
+});
 
     if (!response.ok) throw new Error('Failed to create order');
     return response.json();
@@ -237,10 +241,11 @@ const Checkout = () => {
           order_id: order.razorpayOrderId,
           handler: async (response: RazorpayResponse) => {
             try {
-              await fetch('/api/orders/verify-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+await fetch(`${API_URL}/orders/verify-payment`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,

@@ -21,8 +21,33 @@ const PORT = process.env.PORT || 3001
 // Middleware
 const isProduction = process.env.NODE_ENV === 'production'
 
+// Allowed origins for CORS - supports both localhost and production
+const allowedOrigins = [
+  'https://nutbaba.in',
+  'https://www.nutbaba.in',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+]
+
+// Add custom FRONTEND_URL if provided
+if (process.env.FRONTEND_URL && !allowedOrigins.includes(process.env.FRONTEND_URL)) {
+  allowedOrigins.push(process.env.FRONTEND_URL)
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://nutbaba.in',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    if (!origin) return callback(null, true)
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      console.log('CORS blocked origin:', origin)
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

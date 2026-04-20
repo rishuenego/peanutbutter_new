@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-import { formatPrice } from '../utils'
+import { formatPrice, getApiUrl } from '../utils'
+
+const API_URL = getApiUrl()
 import { CartItem } from '../types'
 
 const Cart = () => {
@@ -59,10 +61,11 @@ const Cart = () => {
     setIsApplyingCoupon(true)
     setCouponError('')
     try {
-      const response = await fetch('/api/coupons/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: couponCode, orderAmount: subtotal })
+const response = await fetch(`${API_URL}/coupons/validate`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({ code: couponCode, orderAmount: subtotal })
       })
       const data = await response.json()
       if (data.success) {

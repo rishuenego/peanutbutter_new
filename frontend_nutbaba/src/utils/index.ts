@@ -5,10 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Auto-detect environment: localhost for development, production URL for live
+export function getApiUrl(): string {
+  if (import.meta.env.VITE_API_URL) {
+    return `${import.meta.env.VITE_API_URL}/api`;
+  }
+  const isLocalhost = typeof window !== 'undefined' && 
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  return isLocalhost ? 'http://localhost:5000/api' : 'https://api.nutbaba.in/api';
+}
+
 // Admin API helper for authenticated requests
-const ADMIN_API_URL = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL}/api` 
-  : "http://localhost:5000/api";
+const ADMIN_API_URL = getApiUrl();
 
 export async function adminFetch(
   endpoint: string,
