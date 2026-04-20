@@ -8,10 +8,16 @@ import { sendOrderConfirmationEmail } from '../utils/mail.js'
 
 const router = Router()
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || '',
-})
+// Initialize Razorpay only if keys are available (for production)
+let razorpay: Razorpay | null = null
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  })
+} else {
+  console.warn('Razorpay keys not configured. Online payments will not work.')
+}
 
 interface OrderRow {
   id: number
@@ -156,6 +162,12 @@ router.post('/', isAuthenticated, async (req: AuthenticatedRequest, res) => {
     // Create Razorpay order if not COD
     let razorpayOrderId = null
     if (paymentMethod !== 'cod') {
+      if (!razorpay) {
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Online payment is not configured. Please use Cash on Delivery.' 
+        })
+      }
       const razorpayOrder = await razorpay.orders.create({
         amount: Math.round(totalAmount * 100), // Amount in paise
         currency: 'INR',
