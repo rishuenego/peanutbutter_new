@@ -1,0 +1,51 @@
+import mysql from 'mysql2/promise'
+
+const connectionString = process.env.DATABASE_URL
+
+let poolConfig: mysql.PoolOptions
+
+if (connectionString) {
+  poolConfig = {
+    uri: connectionString,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  }
+} else {
+  poolConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'nutbaba',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000, // 10 seconds
+    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+  }
+}
+
+export const pool = mysql.createPool(poolConfig)
+
+export async function query<T>(sql: string, params?: unknown[]): Promise<T> {
+  const [results] = await pool.query(sql, params)
+  return results as T
+}
+
+export async function getOne<T>(sql: string, params?: unknown[]): Promise<T | null> {
+  const [rows] = await pool.query(sql, params)
+  const results = rows as T[]
+  return results.length > 0 ? results[0] : null
+}
+
+export async function getMany<T>(sql: string, params?: unknown[]): Promise<T[]> {
+  const [rows] = await pool.query(sql, params)
+  return rows as T[]
+}
+
+export async function execute(sql: string, params?: unknown[]): Promise<mysql.ResultSetHeader> {
+  const [result] = await pool.query(sql, params)
+  return result as mysql.ResultSetHeader
+}
